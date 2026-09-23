@@ -1,0 +1,41 @@
+package utilities;
+import java.util.Arrays; 
+public class ArrayHelper {      
+    public int findMax(int[] arr) { 
+        int max = arr[0]; 
+        for (int num : arr) { 
+            if (num > max) max = num; 
+        } 
+        return max; 
+    } 
+     
+    public int findMin(int[] arr) { 
+        int min = arr[0]; 
+        for (int num : arr) { 
+            if (num < min) min = num; 
+        } 
+        return min; 
+    } 
+     
+    public double findAverage(int[] arr) { 
+        int sum = 0; 
+        for (int num : arr) { 
+            sum += num; 
+        } 
+        return (double) sum / arr.length; 
+    } 
+     
+    public int[] sortArray(int[] arr) { 
+        int[] sorted = arr.clone(); 
+        Arrays.sort(sorted); 
+        return sorted; 
+    } 
+     
+    public int[] reverseArray(int[] arr) { 
+        int[] reversed = new int[arr.length]; 
+        for (int i = 0; i < arr.length; i++) { 
+            reversed[i] = arr[arr.length - 1 - i]; 
+        } 
+        return reversed; 
+    } 
+} 
