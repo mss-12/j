@@ -1,0 +1,150 @@
+public class Experiment3 {
+    public static void main(String[] args) {
+
+        System.out.println("==METHOD OVERLOADING==\n");
+        Calculator c = new Calculator();
+
+        System.out.println("--- Overloading by Number of Parameters ---");
+        System.out.println("Result: " + c.add(10, 20));
+        System.out.println("Result: " + c.add(10, 20, 30));
+        System.out.println("Result: " + c.add(10, 20, 30, 40));
+
+        System.out.println("\n--- Overloading by Type of Parameters ---");
+        System.out.println("Result: " + c.add(10.5, 20.5));
+        System.out.println("Result: " + c.add(5.5f, 4.5f));
+        System.out.println("Result: " + c.add("Hello", " World"));
+
+        System.out.println("\n--- Overloading by Order of Parameters ---");
+        System.out.println("Result: " + c.add("Value: ", 100));
+        System.out.println("Result: " + c.add(200, " is the number"));
+
+        System.out.println("\n--- mul Operations ---");
+        System.out.println("mul(5, 3) = " + c.mul(5, 3));
+        System.out.println("mul(2.5, 4.0) = " + c.mul(2.5, 4.0));
+        System.out.println("mul(2, 3, 4) = " + c.mul(2, 3, 4));
+
+        System.out.println("\n===AREA METHOD OVERLOADING===\n");
+        Acalc a = new Acalc();
+
+        System.out.printf("Area = %.2f sq units%n%n", a.calcA(7.0));
+        System.out.printf("Area = %.2f sq units%n%n", a.calcA(10.0, 5.0));
+        System.out.printf("Area = %.2f sq units%n%n", a.calcA(8.0, 6.0, "triangle"));
+        System.out.printf("Area = %.2f sq units%n%n", a.calcA(5));
+
+        System.out.println("===DISPLAY METHOD OVERLOADING===\n");
+        dishelp d = new dishelp();
+
+        d.dis(42);
+        d.dis(3.14159);
+        d.dis("Hello Java!");
+        d.dis(new int[]{1, 2, 3, 4, 5});
+        System.out.println();
+        d.dis("Java is awesome!", 3);
+    }
+}
+
+class Calculator {
+    int add(int a, int b) {
+        System.out.println("add(int, int) called");
+        return a + b;
+    }
+
+    int add(int a, int b, int c) {
+        System.out.println("add(int, int, int) called");
+        return a + b + c;
+    }
+
+    int add(int a, int b, int c, int d) {
+        System.out.println("add(int, int, int, int) called");
+        return a + b + c + d;
+    }
+
+    double add(double a, double b) {
+        System.out.println("add(double, double) called");
+        return a + b;
+    }
+
+    float add(float a, float b) {
+        System.out.println("add(float, float) called");
+        return a + b;
+    }
+
+    String add(String a, String b) {
+        System.out.println("add(String, String) called");
+        return a + b;
+    }
+
+    String add(String s, int n) {
+        System.out.println("add(String, int) called");
+        return s + n;
+    }
+
+    String add(int n, String s) {
+        System.out.println("add(int, String) called");
+        return n + s;
+    }
+
+    int mul(int a, int b) {
+        return a * b;
+    }
+
+    double mul(double a, double b) {
+        return a * b;
+    }
+
+    int mul(int a, int b, int c) {
+        return a * b * c;
+    }
+}
+
+class Acalc {
+    double calcA(double r) {
+        System.out.println("Calculating area of Circle");
+        return Math.PI * r * r;
+    }
+
+    double calcA(double l, double b) {
+        System.out.println("Calculating area of Rectangle");
+        return l * b;
+    }
+
+    double calcA(double b, double h, String shape) {
+        if (shape.equalsIgnoreCase("triangle")) {
+            System.out.println("Calculating area of Triangle");
+            return 0.5 * b * h;
+        }
+        return 0;
+    }
+
+    double calcA(int s) {
+        System.out.println("Calculating area of Square");
+        return s * s;
+    }
+}
+
+class dishelp {
+    void dis(int v) {
+        System.out.println("Integer value: " + v);
+    }
+
+    void dis(double v) {
+        System.out.println("Double value: " + v);
+    }
+
+    void dis(String v) {
+        System.out.println("String value: " + v);
+    }
+
+    void dis(int[] a) {
+        System.out.print("Array values: ");
+        for (int n : a)
+            System.out.print(n + " ");
+        System.out.println();
+    }
+
+    void dis(String m, int n) {
+        System.out.println("Repeating message " + n + " times:");
+        for (int i = 1; i <= n; i++)
+            System.out.println("  " + i + ". " + m);
+    }
+}
