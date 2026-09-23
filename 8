@@ -1,0 +1,90 @@
+import java.util.Scanner;
+class InsufBalExc extends Exception {
+    InsufBalExc(String msg) {
+        super(msg);
+    }
+}
+
+class ATM {
+    double bal = 20000;
+    final int PIN = 1234;
+    int Tcount = 0;
+    final double minbal = 1000, DAILY_LIMIT = 10000;
+    boolean verifyPin(int pin) {
+        return pin == PIN;
+    }
+    void checkbal() { System.out.println("Current bal : ₹" + bal);   }
+    void deposit(double amount) {
+        if (amount > 0) {
+            bal += amount;
+            Tcount++;
+            System.out.println("₹" + amount + " Deposited Successfully.");
+        } else
+            System.out.println("Invalid Deposit Amount.");
+    }
+    void withdraw(double amount) throws InsufBalExc {
+        if (amount <= 0)
+            throw new IllegalArgumentException("Amount must be greater than zero.");
+        if (amount > DAILY_LIMIT)
+            throw new IllegalArgumentException("Daily Withdrawal Limit is ₹10000.");
+        if (bal - amount < minbal)
+            throw new InsufBalExc(
+                    "Minimum bal of ₹1000 must be maintained.");
+        bal -= amount;
+        Tcount++;
+        System.out.println("\nWithdrawal Successful");
+        System.out.println("Amount Withdrawn : ₹" + amount);
+        System.out.println("Remaining bal : ₹" + bal);
+    }
+    void displayTcount() {
+        System.out.println("Total Transactions : " + Tcount);
+    }
+}
+
+public class Experiment8 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ATM atm = new ATM();
+        System.out.print("Enter ATM PIN: ");
+        int pin = sc.nextInt();
+        if (!atm.verifyPin(pin)) {
+            System.out.println("Invalid PIN. Access Denied.");
+            sc.close();
+            return;
+        }
+        int choice;
+        do {
+            System.out.println("\n== ATM MENU ==\n1. Check bal\n2. Deposit\n3. Withdraw\n4. Transaction Count\n5. Exit");
+            System.out.print("Enter your choice : ");
+            choice = sc.nextInt();
+            try {
+                switch (choice) {
+                    case 1:
+                        atm.checkbal();
+                        break;
+                    case 2:
+                        System.out.print("Enter Amount:₹");
+                        atm.deposit(sc.nextDouble());
+                        break;
+                    case 3:
+                        System.out.print("Enter Amount:₹");
+                        atm.withdraw(sc.nextDouble());
+                        break;
+                    case 4:
+                        atm.displayTcount();
+                        break;
+                    case 5:
+                        System.out.println("Thank You for Using Our ATM.");
+                        break;
+                    default:
+                        System.out.println("Invalid Choice.");
+                }
+            } catch (InsufBalExc e) {
+                System.out.println("Custom Exception: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        } while (choice != 5);
+        sc.close();
+    }
+}
