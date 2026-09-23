@@ -1,0 +1,39 @@
+package utilities;  
+public class StringHelper {      
+    public String reverse(String str) { 
+        return new StringBuilder(str).reverse().toString(); 
+    } 
+     
+    public boolean isPalindrome(String str) { 
+        String clean = str.replaceAll("\\s+", "").toLowerCase(); 
+        return clean.equals(new StringBuilder(clean).reverse().toString()); 
+    } 
+     
+    public int countVowels(String str) { 
+        int count = 0; 
+        String vowels = "aeiouAEIOU"; 
+        for (char c : str.toCharArray()) { 
+            if (vowels.indexOf(c) != -1) { 
+                count++; 
+            } 
+        } 
+        return count; 
+    } 
+     
+    public String toTitleCase(String str) { 
+        StringBuilder result = new StringBuilder(); 
+        boolean capitalizeNext = true; 
+        for (char c : str.toCharArray()) { 
+            if (Character.isWhitespace(c)) { 
+                capitalizeNext = true; 
+                result.append(c); 
+            } else if (capitalizeNext) { 
+                result.append(Character.toUpperCase(c)); 
+                capitalizeNext = false; 
+            } else { 
+                result.append(Character.toLowerCase(c)); 
+            } 
+        } 
+        return result.toString(); 
+    } 
+} 
