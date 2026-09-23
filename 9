@@ -1,0 +1,296 @@
+import java.io.*;
+import java.util.*;
+
+public class Experiment9 {
+
+    static void join(Thread... t) {
+        try {
+            for (Thread x : t) x.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        System.out.println("     MULTITHREADING IN JAVA     ");
+
+        System.out.println("===== 1. THREAD CREATION METHODS =====\n");
+        System.out.println("--- Method 1: Extending Thread class ---");
+        NumberPrinter np = new NumberPrinter("NumberThread");
+
+        System.out.println("\n--- Method 2: Implementing Runnable interface ---");
+        Thread lt = new Thread(new LetterPrinter("LetterThread"));
+
+        System.out.println("\nStarting both threads...\n");
+        np.start();
+        lt.start();
+        join(np, lt);
+
+        System.out.println("\n===== 2. THREAD INFORMATION =====");
+        Thread t = Thread.currentThread();
+        System.out.println("Current Thread: " + t.getName());
+        System.out.println("Thread ID: " + t.getId());
+        System.out.println("Thread Priority: " + t.getPriority());
+        System.out.println("Thread State: " + t.getState());
+        System.out.println("Is Alive: " + t.isAlive());
+        System.out.println("Is Daemon: " + t.isDaemon());
+
+        System.out.println("\n===== 3. THREAD SYNCHRONIZATION =====");
+        System.out.println("Without synchronization, race conditions can occur.");
+        System.out.println("Using synchronized method to ensure thread safety.\n");
+
+        Counter c = new Counter();
+        Thread c1 = new CounterThread(c, "Counter-1");
+        Thread c2 = new CounterThread(c, "Counter-2");
+        Thread c3 = new CounterThread(c, "Counter-3");
+        c1.start(); c2.start(); c3.start();
+        join(c1, c2, c3);
+
+        System.out.println("Expected count: 3000");
+        System.out.println("Actual count: " + c.getCount());
+        System.out.println("(Values should match with synchronization)");
+
+        System.out.println("\n===== 4. THREAD PRIORITY =====");
+        System.out.println("MIN_PRIORITY = " + Thread.MIN_PRIORITY);
+        System.out.println("NORM_PRIORITY = " + Thread.NORM_PRIORITY);
+        System.out.println("MAX_PRIORITY = " + Thread.MAX_PRIORITY);
+        System.out.println();
+
+        Thread l = new PriorityThread("Low-Priority");
+        Thread n = new PriorityThread("Normal-Priority");
+        Thread h = new PriorityThread("High-Priority");
+        l.setPriority(1); n.setPriority(5); h.setPriority(10);
+        l.start(); n.start(); h.start();
+        join(l, n, h);
+
+        System.out.println("\n===== 5. INTER-THREAD COMMUNICATION =====");
+        System.out.println("Producer-Consumer pattern using wait() and notify()\n");
+
+        SharedBuffer b = new SharedBuffer();
+        Thread p = new Producer(b), co = new Consumer(b);
+        p.start(); co.start();
+        join(p, co);
+
+        LambdaThreadDemo.runDemo();
+
+        System.out.println("\n===== 6. THREAD SLEEP AND INTERRUPT =====");
+
+        Thread sleepy = new Thread(() -> {
+            try {
+                System.out.println("Sleepy thread going to sleep for 3 seconds...");
+                Thread.sleep(3000);
+                System.out.println("Sleepy thread woke up!");
+            } catch (InterruptedException e) {
+                System.out.println("Sleepy thread was interrupted!");
+            }
+        });
+
+        sleepy.start();
+        try {
+            Thread.sleep(1000);
+            System.out.println("Interrupting sleepy thread...");
+            sleepy.interrupt();
+            sleepy.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("\n===== 7. DAEMON THREAD =====");
+
+        Thread d = new Thread(() -> {
+            while (true) {
+                System.out.println("Daemon thread running in background...");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        });
+
+        d.setDaemon(true);
+        System.out.println("Is daemon thread: " + d.isDaemon());
+        d.start();
+
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("\nMain thread ending - daemon thread will also stop.");
+        System.out.println("\n===== PROGRAM COMPLETED =====");
+    }
+}
+
+class NumberPrinter extends Thread {
+    String name;
+
+    NumberPrinter(String n) {
+        name = n;
+    }
+
+    public void run() {
+        System.out.println(name + " started (Thread class)");
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(name + ": " + i);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println(name + " interrupted");
+            }
+        }
+        System.out.println(name + " finished");
+    }
+}
+
+class LetterPrinter implements Runnable {
+    String name;
+
+    LetterPrinter(String n) {
+        name = n;
+    }
+
+    public void run() {
+        System.out.println(name + " started (Runnable interface)");
+        for (char c = 'A'; c <= 'E'; c++) {
+            System.out.println(name + ": " + c);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println(name + " interrupted");
+            }
+        }
+        System.out.println(name + " finished");
+    }
+}
+
+class Counter {
+    int count;
+
+    synchronized void increment() {
+        count++;
+    }
+
+    int getCount() {
+        return count;
+    }
+}
+
+class CounterThread extends Thread {
+    Counter c;
+    String name;
+
+    CounterThread(Counter c, String n) {
+        this.c = c;
+        name = n;
+    }
+
+    public void run() {
+        for (int i = 0; i < 1000; i++) c.increment();
+        System.out.println(name + " completed 1000 increments");
+    }
+}
+
+class SharedBuffer {
+    int data;
+    boolean hasData;
+
+    synchronized void produce(int x) throws InterruptedException {
+        while (hasData) wait();
+        data = x;
+        hasData = true;
+        System.out.println("Produced: " + x);
+        notify();
+    }
+
+    synchronized int consume() throws InterruptedException {
+        while (!hasData) wait();
+        hasData = false;
+        System.out.println("Consumed: " + data);
+        notify();
+        return data;
+    }
+}
+
+class Producer extends Thread {
+    SharedBuffer b;
+
+    Producer(SharedBuffer b) {
+        this.b = b;
+    }
+
+    public void run() {
+        try {
+            for (int i = 1; i <= 5; i++) {
+                b.produce(i);
+                Thread.sleep(300);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Consumer extends Thread {
+    SharedBuffer b;
+
+    Consumer(SharedBuffer b) {
+        this.b = b;
+    }
+
+    public void run() {
+        try {
+            for (int i = 1; i <= 5; i++) {
+                b.consume();
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class PriorityThread extends Thread {
+    PriorityThread(String n) {
+        super(n);
+    }
+
+    public void run() {
+        System.out.println(getName() + " with priority " + getPriority() + " started");
+        long sum = 0;
+        for (int i = 0; i < 100000; i++) sum += i;
+        System.out.println(getName() + " with priority " + getPriority() + " finished");
+    }
+}
+
+class LambdaThreadDemo {
+    static void runDemo() {
+        System.out.println("\n===== LAMBDA EXPRESSION WITH THREADS =====");
+
+        Thread t1 = new Thread(() -> print(1));
+        Thread t2 = new Thread(() -> print(2));
+
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void print(int n) {
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("Lambda Thread " + n + ": Count " + i);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
