@@ -1,0 +1,222 @@
+public class Experiment4 {
+    public static void main(String[] args) {
+
+        System.out.println("SINGLE INHERITANCE ");
+        System.out.println("(Animal -> Dog)\n");
+
+        Dog dog = new Dog("Buddy", "Golden Retriever");
+        dog.displayInfo();
+        dog.eat();
+        dog.sleep();
+        dog.bark();
+
+        System.out.println("\n MULTILEVEL INHERITANCE ");
+        Employee emp = new Employee("John Doe", "EMP001", "Engineering");
+        emp.displayDetails();
+        emp.breathe();
+        emp.speak();
+        emp.work();
+
+        System.out.println("\n HIERARCHICAL INHERITANCE ");
+        new cir("Red", 5.0).display();
+        System.out.println();
+        new rec("Blue", 10.0, 6.0).display();
+        System.out.println();
+        new Triangle("Green", 8.0, 5.0).display();
+
+        System.out.println("\nHYBRID INHERITANCE");
+        System.out.println("--- Printer ---");
+        Printer p = new Printer("HP", "LaserJet Pro");
+        p.powerOn();
+        p.print();
+        p.powerOff();
+
+        System.out.println("\n--- Scanner ---");
+        Scanner s = new Scanner("Canon", "CanoScan LiDE");
+        s.powerOn();
+        s.scan();
+        s.powerOff();
+
+        System.out.println("\n--- All-in-One Printer ---");
+        AllInOnePrinter a = new AllInOnePrinter("Epson", "EcoTank ET-4850");
+        a.powerOn();
+        a.print();
+        a.scan();
+        a.copy();
+        a.powerOff();
+    }
+}
+
+class Animal {
+    String name;
+    void eat() {
+        System.out.println(name + " is eating.");
+    }
+    void sleep() {
+        System.out.println(name + " is sleeping.");
+    }
+}
+
+class Dog extends Animal {
+    String breed;
+    Dog(String name, String breed) {
+        this.name = name;
+        this.breed = breed;
+    }
+    void bark() {
+        System.out.println(name + " is barking!");
+    }
+    void displayInfo() {
+        System.out.println("Name: " + name + ", Breed: " + breed);
+    }
+}
+
+class LivingBeing {
+    void breathe() {
+        System.out.println("Breathing...");
+    }
+}
+
+class Human extends LivingBeing {
+    String name;
+    Human(String name) {
+        this.name = name;
+    }
+    void speak() {
+        System.out.println(name + " is speaking.");
+    }
+}
+
+class Employee extends Human {
+    String id, dept;
+    Employee(String name, String id, String dept) {
+        super(name);
+        this.id = id;
+        this.dept = dept;
+    }
+
+    void work() {
+        System.out.println(name + " is working in " + dept + " department.");
+    }
+    void displayDetails() {
+        System.out.println("Employee: " + name + " | ID: " + id + " | Dept: " + dept);
+    }
+}
+
+class Sh {
+    String color;
+    Sh(String color) {
+        this.color = color;
+    }
+    void displayColor() {
+        System.out.println("Color: " + color);
+    }
+    double calculateArea() {
+        return 0;
+    }
+}
+
+class cir extends Sh {
+    double radius;
+    cir(String color, double radius) {
+        super(color);
+        this.radius = radius;
+    }
+    double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+    void display() {
+        System.out.println("cir - Radius: " + radius);
+        displayColor();
+        System.out.printf("Area: %.2f%n", calculateArea());
+    }
+}
+
+class rec extends Sh {
+    double length, width;
+    rec(String color, double length, double width) {
+        super(color);
+        this.length = length;
+        this.width = width;
+    }
+    double calculateArea() {
+        return length * width;
+    }
+    void display() {
+        System.out.println("rec - Length: " + length + ", Width: " + width);
+        displayColor();
+        System.out.printf("Area: %.2f%n", calculateArea());
+    }
+}
+
+class Triangle extends Sh {
+    double base, height;
+    Triangle(String color, double base, double height) {
+        super(color);
+        this.base = base;
+        this.height = height;
+    }
+    double calculateArea() {
+        return 0.5 * base * height;
+    }
+    void display() {
+        System.out.println("Triangle - Base: " + base + ", Height: " + height);
+        displayColor();
+        System.out.printf("Area: %.2f%n", calculateArea());
+    }
+}
+
+interface Printable {
+    void print();
+}
+interface Scannable {
+    void scan();
+}
+
+class Machine {
+    String brand, model;
+    Machine(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
+    void powerOn() {
+        System.out.println(brand + " " + model + " is powered ON.");
+    }
+    void powerOff() {
+        System.out.println(brand + " " + model + " is powered OFF.");
+    }
+}
+
+class Printer extends Machine implements Printable {
+    Printer(String brand, String model) {
+        super(brand, model);
+    }
+    public void print() {
+        System.out.println("Printing document using " + brand + " " + model);
+    }
+}
+
+class Scanner extends Machine implements Scannable {
+    Scanner(String brand, String model) {
+        super(brand, model);
+    }
+    public void scan() {
+        System.out.println("Scanning document using " + brand + " " + model);
+    }
+}
+
+class AllInOnePrinter extends Machine implements Printable, Scannable {
+    AllInOnePrinter(String brand, String model) {
+        super(brand, model);
+    }
+    public void print() {
+        System.out.println("Printing using All-in-One: " + brand + " " + model);
+    }
+
+    public void scan() {
+        System.out.println("Scanning using All-in-One: " + brand + " " + model);
+    }
+    void copy() {
+        System.out.println("Copying document using " + brand + " " + model);
+    }
+}
