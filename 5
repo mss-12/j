@@ -1,0 +1,74 @@
+import mathoperations.BasicMath; 
+import mathoperations.AdvancedMath;
+import utilities.*;
+import java.util.Date; 
+import java.util.Random; 
+import java.text.SimpleDateFormat; 
+import java.util.Arrays; 
+ 
+public class Experiment5 { 
+     
+    public static void main(String[] args) {
+        System.out.println(" JAVA PACKAGES DEMONSTRATION ");
+
+        BasicMath basicMath = new BasicMath(); 
+        System.out.println("--- Basic Math Operations ---"); 
+        System.out.println("Addition: 15 + 7 = " + basicMath.add(15, 7)); 
+        System.out.println("Subtraction: 20 - 8 = " + basicMath.subtract(20, 8)); 
+        System.out.println("Multiplication: 6 × 9 = " + basicMath.multiply(6, 9)); 
+        System.out.println("Division: 100 ÷ 8 = " + basicMath.divide(100, 8)); 
+         
+        System.out.println(); 
+         
+        AdvancedMath advMath = new AdvancedMath(); 
+        System.out.println("--- Advanced Math Operations ---"); 
+        System.out.println("Power: 2^10 = " + (int) advMath.power(2, 10)); 
+        System.out.println("Square Root: √144 = " + (int) advMath.squareRoot(144)); 
+        System.out.println("Factorial: 7! = " + advMath.factorial(7)); 
+        System.out.println("Is 97 Prime? " + advMath.isPrime(97)); 
+        System.out.println("Is 100 Prime? " + advMath.isPrime(100)); 
+        
+        StringHelper strHelper = new StringHelper(); 
+        System.out.println("--- String Helper Operations ---"); 
+        String testStr = "Hello World"; 
+        System.out.println("Original: \"" + testStr + "\""); 
+        System.out.println("Reversed: \"" + strHelper.reverse(testStr) + "\""); 
+        System.out.println("Vowel Count: " + strHelper.countVowels(testStr)); 
+        System.out.println("Title Case of 'jAVA proGRAMMING': \"" +  strHelper.toTitleCase("jAVA proGRAMMING") + "\""); 
+        System.out.println("Is 'A man a plan a canal Panama' palindrome? " +  strHelper.isPalindrome("A man a plan a canal Panama")); 
+         
+        System.out.println(); 
+         
+        ArrayHelper arrHelper = new ArrayHelper(); 
+        System.out.println("--- Array Helper Operations ---"); 
+        int[] numbers = {64, 34, 25, 12, 22, 11, 90}; 
+        System.out.println("Original Array: " + Arrays.toString(numbers)); 
+        System.out.println("Maximum: " + arrHelper.findMax(numbers)); 
+        System.out.println("Minimum: " + arrHelper.findMin(numbers)); 
+        System.out.printf("Average: %.2f%n", arrHelper.findAverage(numbers)); 
+        System.out.println("Sorted Array: " + Arrays.toString(arrHelper.sortArray(numbers))); 
+        System.out.println("Reversed Array: " + Arrays.toString(arrHelper.reverseArray(numbers))); 
+      
+        System.out.println("\n===BUILT-IN JAVA PACKAGES===\n"); 
+        Date currentDate = new Date(); 
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM dd, yyyy HH:mm:ss"); 
+        System.out.println("Current Date/Time: " + sdf.format(currentDate)); 
+         
+        System.out.println(); 
+        Random rand = new Random(); 
+        System.out.print("5 Random Numbers (1-100): "); 
+        for (int i = 0; i < 5; i++) { 
+            System.out.print(rand.nextInt(100) + 1); 
+            if (i < 4) System.out.print(", "); 
+        } 
+        System.out.println(); 
+        System.out.println(); 
+         
+        System.out.println("--- java.lang.Math (imported by default) ---"); 
+        System.out.println("PI value: " + Math.PI); 
+        System.out.println("E value: " + Math.E); 
+        System.out.println("Max(45, 78): " + Math.max(45, 78)); 
+        System.out.println("Round(4.7): " + Math.round(4.7)); 
+        System.out.println("Abs(-99): " + Math.abs(-99)); 
+    } 
+} 
