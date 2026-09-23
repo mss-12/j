@@ -1,0 +1,236 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class Experiment13 extends JFrame {
+
+    JTextField name,email,phone;
+    JPasswordField pass;
+    JRadioButton male,female,other;
+    JCheckBox java,python,cpp,js;
+    JComboBox<String> course;
+    JTextArea address,output;
+    JSpinner age;
+    JSlider exp;
+
+    public Experiment13() {
+        setTitle("Student Registration Form - Swing Demo");
+        setSize(800,700);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel main=new JPanel(new BorderLayout(10,10));
+        main.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
+
+        JPanel head=new JPanel();
+        head.setBackground(new Color(70,130,180));
+        JLabel title=new JLabel("Student Registration Form");
+        title.setFont(new Font("Arial",Font.BOLD,24));
+        title.setForeground(Color.WHITE);
+        head.add(title);
+        main.add(head,BorderLayout.NORTH);
+
+        JPanel form=new JPanel(new GridBagLayout());
+        form.setBorder(BorderFactory.createTitledBorder("Personal Information"));
+        GridBagConstraints g=new GridBagConstraints();
+        g.insets=new Insets(5,5,5,5);
+        g.fill=GridBagConstraints.HORIZONTAL;
+
+        add(form,g,0,"Full Name:",name=new JTextField(25));
+        add(form,g,1,"Email:",email=new JTextField(25));
+        add(form,g,2,"Password:",pass=new JPasswordField(25));
+        add(form,g,3,"Phone:",phone=new JTextField(25));
+
+        g.gridx=0;g.gridy=4;g.gridwidth=1;
+        form.add(new JLabel("Age:"),g);
+        g.gridx=1;
+        age=new JSpinner(new SpinnerNumberModel(18,15,60,1));
+        form.add(age,g);
+
+        g.gridx=0;g.gridy=5;
+        form.add(new JLabel("Gender:"),g);
+        g.gridx=1;g.gridwidth=2;
+        JPanel gp=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        male=new JRadioButton("Male");
+        female=new JRadioButton("Female");
+        other=new JRadioButton("Other");
+        ButtonGroup bg=new ButtonGroup();
+        bg.add(male);bg.add(female);bg.add(other);
+        gp.add(male);gp.add(female);gp.add(other);
+        form.add(gp,g);
+
+        g.gridx=0;g.gridy=6;g.gridwidth=1;
+        form.add(new JLabel("Course:"),g);
+        g.gridx=1;g.gridwidth=2;
+        course=new JComboBox<>(new String[]{
+            "Select Course","Computer Science","Information Technology",
+            "Electronics","Mechanical","Civil","Electrical"});
+        form.add(course,g);
+
+        g.gridx=0;g.gridy=7;g.gridwidth=1;
+        form.add(new JLabel("Skills:"),g);
+        g.gridx=1;g.gridwidth=2;
+        JPanel sp=new JPanel(new FlowLayout(FlowLayout.LEFT));
+        java=new JCheckBox("Java");
+        python=new JCheckBox("Python");
+        cpp=new JCheckBox("C++");
+        js=new JCheckBox("JavaScript");
+        sp.add(java);sp.add(python);sp.add(cpp);sp.add(js);
+        form.add(sp,g);
+
+        g.gridx=0;g.gridy=8;g.gridwidth=1;
+        form.add(new JLabel("Experience (years):"),g);
+        g.gridx=1;g.gridwidth=2;
+        exp=new JSlider(0,10,0);
+        exp.setMajorTickSpacing(2);
+        exp.setMinorTickSpacing(1);
+        exp.setPaintTicks(true);
+        exp.setPaintLabels(true);
+        form.add(exp,g);
+
+        g.gridx=0;g.gridy=9;g.gridwidth=1;
+        g.anchor=GridBagConstraints.NORTH;
+        form.add(new JLabel("Address:"),g);
+        g.gridx=1;g.gridwidth=2;
+        address=new JTextArea(3,25);
+        address.setLineWrap(true);
+        address.setWrapStyleWord(true);
+        form.add(new JScrollPane(address),g);
+
+        main.add(form,BorderLayout.CENTER);
+
+        JButton submit=new JButton("Submit");
+        JButton clear=new JButton("Clear");
+        JButton exit=new JButton("Exit");
+
+        submit.setBackground(new Color(60,179,113));
+        submit.setForeground(Color.WHITE);
+        clear.setBackground(new Color(255,165,0));
+        clear.setForeground(Color.WHITE);
+        exit.setBackground(new Color(220,20,60));
+        exit.setForeground(Color.WHITE);
+
+        for(JButton b:new JButton[]{submit,clear,exit}) {
+            b.setFont(new Font("Arial",Font.BOLD,14));
+            b.setPreferredSize(new Dimension(100,35));
+        }
+
+        JPanel buttons=new JPanel(new FlowLayout(FlowLayout.CENTER,20,10));
+        buttons.add(submit);buttons.add(clear);buttons.add(exit);
+
+        output=new JTextArea(8,50);
+        output.setEditable(false);
+        output.setFont(new Font("Monospaced",Font.PLAIN,12));
+
+        JPanel out=new JPanel(new BorderLayout());
+        out.setBorder(BorderFactory.createTitledBorder("Output"));
+        out.add(new JScrollPane(output));
+
+        JPanel south=new JPanel(new BorderLayout());
+        south.add(buttons,BorderLayout.NORTH);
+        south.add(out,BorderLayout.CENTER);
+        main.add(south,BorderLayout.SOUTH);
+
+        add(main);
+
+        submit.addActionListener(e->submitForm());
+        clear.addActionListener(e->clearForm());
+        exit.addActionListener(e->{
+            if(JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to exit?",
+                    "Confirm Exit",JOptionPane.YES_NO_OPTION)
+                    ==JOptionPane.YES_OPTION) System.exit(0);
+        });
+    }
+
+    void add(JPanel p,GridBagConstraints g,int row,String text,JComponent c){
+        g.gridx=0;g.gridy=row;g.gridwidth=1;
+        p.add(new JLabel(text),g);
+        g.gridx=1;g.gridwidth=2;
+        p.add(c,g);
+    }
+
+    void submitForm() {
+        if(name.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this,"Please enter your name!",
+                    "Validation Error",JOptionPane.ERROR_MESSAGE);
+            name.requestFocus(); return;
+        }
+
+        if(email.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this,"Please enter your email!",
+                    "Validation Error",JOptionPane.ERROR_MESSAGE);
+            email.requestFocus(); return;
+        }
+
+        if(course.getSelectedIndex()==0) {
+            JOptionPane.showMessageDialog(this,"Please select a course!",
+                    "Validation Error",JOptionPane.WARNING_MESSAGE);
+            course.requestFocus(); return;
+        }
+
+        String gender="Not specified";
+        if(male.isSelected()) gender="Male";
+        else if(female.isSelected()) gender="Female";
+        else if(other.isSelected()) gender="Other";
+
+        String skills="";
+        if(java.isSelected()) skills+="Java, ";
+        if(python.isSelected()) skills+="Python, ";
+        if(cpp.isSelected()) skills+="C++, ";
+        if(js.isSelected()) skills+="JavaScript, ";
+        skills=skills.isEmpty()?"None":skills.substring(0,skills.length()-2);
+
+        output.setText(
+            "====== REGISTRATION DETAILS ======\n\n"+
+            "Name: "+name.getText()+"\n"+
+            "Email: "+email.getText()+"\n"+
+            "Phone: "+phone.getText()+"\n"+
+            "Age: "+age.getValue()+"\n"+
+            "Gender: "+gender+"\n"+
+            "Course: "+course.getSelectedItem()+"\n"+
+            "Skills: "+skills+"\n"+
+            "Experience: "+exp.getValue()+" years\n"+
+            "Address: "+address.getText()+"\n"+
+            "\n====================================\n"+
+            "Registration submitted successfully!"
+        );
+
+        JOptionPane.showMessageDialog(this,
+            "Registration submitted successfully!",
+            "Success",JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    void clearForm() {
+        name.setText("");
+        email.setText("");
+        pass.setText("");
+        phone.setText("");
+        age.setValue(18);
+        male.setSelected(false);
+        female.setSelected(false);
+        other.setSelected(false);
+        course.setSelectedIndex(0);
+        java.setSelected(false);
+        python.setSelected(false);
+        cpp.setSelected(false);
+        js.setSelected(false);
+        exp.setValue(0);
+        address.setText("");
+        output.setText("");
+        name.requestFocus();
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e) {}
+
+        SwingUtilities.invokeLater(()->{
+            System.out.println("   GUI APPLICATION USING SWING PACKAGE      ");
+            System.out.println("\nLaunching GUI...\n");
+
+            new Experiment13().setVisible(true);
+        });
+    }
+}
